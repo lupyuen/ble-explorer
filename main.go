@@ -121,7 +121,7 @@ func connect(device ble.Advertisement) {
 }
 
 // ServiceID is the GATT Service ID to be searched, in lowercase
-const ServiceID = "180a"
+const ServiceID = "b82ab3fc15954f6a80f0fe094cc218f9"
 
 // Explore the services for the device
 func explore(cln ble.Client, p *ble.Profile, a ble.Advertisement) error {
@@ -134,8 +134,8 @@ func explore(cln ble.Client, p *ble.Profile, a ble.Advertisement) error {
 		}
 	}
 	if !foundService {
-		// Service not found
-		// return nil
+		// Quit if service not found
+		return nil
 	}
 	// Display the device
 	showDevice(a)
@@ -143,7 +143,7 @@ func explore(cln ble.Client, p *ble.Profile, a ble.Advertisement) error {
 	for _, s := range p.Services {
 		if s.UUID.String() != ServiceID {
 			// Show only our service
-			// continue
+			continue
 		}
 		fmt.Printf("    Service: %s %s, Handle (0x%02X)\n", s.UUID, ble.Name(s.UUID), s.Handle)
 

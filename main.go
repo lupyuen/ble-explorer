@@ -55,6 +55,7 @@ func main() {
 	chkErr(ble.Scan(ctx, *dup, advHandler, nil))
 
 	// Connect to every device scanned and display services
+	fmt.Printf("Connecting to devices...\n")
 	previousDevices := make(map[string]bool)
 	for _, device := range devices {
 		addr := device.Addr().String()
@@ -262,7 +263,7 @@ func chkErr(err error) {
 	switch errors.Cause(err) {
 	case nil:
 	case context.DeadlineExceeded:
-		fmt.Printf("Scanned\n")
+		fmt.Printf("Scanned %d devices\n", len(devices))
 	case context.Canceled:
 		fmt.Printf("canceled\n")
 	default:

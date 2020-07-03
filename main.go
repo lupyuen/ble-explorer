@@ -66,6 +66,7 @@ func main() {
 		// Connect to the device and display services
 		connect(device)
 	}
+	fmt.Printf("Done\n")
 }
 
 // Handle each device scanned

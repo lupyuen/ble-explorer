@@ -31,7 +31,7 @@ var (
 	device = flag.String("device", "default", "implementation of ble")
 	sub    = flag.Duration("sub", 0, "subscribe to notification and indication for a specified period")
 	sd     = flag.Duration("sd", 5*time.Second, "scanning duration, 0 for indefinitely")
-	cd     = flag.Duration("cd", 5*time.Second, "connect duration, 0 for indefinitely")
+	cd     = flag.Duration("cd", 1*time.Second, "connect duration, 0 for indefinitely")
 	dup    = flag.Bool("dup", false, "allow duplicate reported")
 )
 
@@ -108,11 +108,10 @@ func connect(device ble.Advertisement) {
 	p, err := cln.DiscoverProfile(true)
 	if err != nil {
 		// fmt.Printf("can't discover profile: %s\n", err)
-		return
+	} else {
+		// Start the exploration
+		explore(cln, p, device)
 	}
-
-	// Start the exploration.
-	explore(cln, p, device)
 
 	// Disconnect the connection. (On OS X, this might take a while.)
 	// fmt.Printf("Disconnecting [ %s ]... (this might take up to few seconds on OS X)\n", cln.Addr())
@@ -152,7 +151,7 @@ func explore(cln ble.Client, p *ble.Profile, a ble.Advertisement) error {
 			fmt.Printf("      Characteristic: %s %s, Property: 0x%02X (%s), Handle(0x%02X), VHandle(0x%02X)\n",
 				c.UUID, ble.Name(c.UUID), c.Property, propString(c.Property), c.Handle, c.ValueHandle)
 			if (c.Property & ble.CharRead) != 0 {
-				b, err := cln.ReadCharacteristic(c)
+				b, err := cln.ReadLongCharacteristic(c)
 				if err != nil {
 					// fmt.Printf("Failed to read characteristic: %s\n", err)
 					continue

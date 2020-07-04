@@ -1,12 +1,12 @@
 /*
-To build and run:
+Show phones nearby running TraceTogether. To build and run:
 
 # Ignore the message "go get: no install location"
 go get ./...
 go build main.go
 
-# Scan for 5 seconds, connect timeout is 5 seconds
-sudo ./main -sd 5s -cd 5s
+# Scan for 5 seconds, connect timeout is 1 second
+sudo ./main -sd 5s -cd 1s
 
 Based on
 https://github.com/JuulLabs-OSS/ble/tree/master/examples/basic/scanner

@@ -57,6 +57,7 @@ func main() {
 	// Connect to every device scanned and display services
 	fmt.Printf("Connecting to devices...\n")
 	previousDevices := make(map[string]bool)
+	count := 0
 	for _, device := range devices {
 		addr := device.Addr().String()
 		if previousDevices[addr] {
@@ -65,6 +66,11 @@ func main() {
 		previousDevices[addr] = true
 		// Connect to the device and display services
 		connect(device)
+		count++
+		if count >= 100 {
+			// Connect to first 100 devices only
+			break
+		}
 	}
 	fmt.Printf("Done\n")
 }
@@ -72,7 +78,20 @@ func main() {
 // Handle each device scanned
 func advHandler(a ble.Advertisement) {
 	if !a.Connectable() {
-		return // Skip non-connectable devices
+		// Skip non-connectable devices
+		return
+	}
+	// Check whether the device supports our GATT service
+	foundService := false
+	for _, s := range a.Services() {
+		if s.String() == ServiceID {
+			foundService = true
+			break
+		}
+	}
+	if !foundService {
+		// Skip devices that don't support our GATT service
+		return
 	}
 	// Append the device for connecting later
 	devices = append(devices, a)
